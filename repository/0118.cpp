@@ -1,61 +1,88 @@
+#include <assert.h>
+#include <algorithm>
+#include <array>
+#include <bitset>
+#include <cmath>
+#include <complex>
+#include <cstdio>
+#include <cstring>
+#include <deque>
+#include <functional>
+#include <iomanip>
 #include <iostream>
+#include <map>
+#include <numeric>
+#include <queue>
+#include <random>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
 using namespace std;
 
-int H, W;
-char str[101][101];
-
-bool in(int x, int y) { return 0 <= x && x < W && 0 <= y && y < H; }
-
-void dfs(int x, int y, char key) {
-  /*
-    for(int i=0; i<H; i++) {
-      for(int j=0; j<W; j++) {
-        cout << str[i][j];
-      }
-      cout << endl;
-    }
-    cout << endl;
-  */
-  const int dx[] = {-1, 1, 0, 0};
-  const int dy[] = {0, 0, -1, 1};
-
-  str[y][x] = '-';
-  for (int i = 0; i < 4; i++) {
-    int nx = x + dx[i], ny = y + dy[i];
-    if (in(nx, ny) && str[ny][nx] == key && str[ny][nx] != '-')
-      dfs(nx, ny, key);
-  }
+void main_();
+signed main() {
+  cin.tie(0);
+  ios::sync_with_stdio(false);
+  main_();
+  return 0;
 }
 
-int main() {
-  int n, m;
+#define REP(i, a, b) for (int i = a; i < (int)b; i++)
+#define rep(i, n) REP(i, 0, n)
+#define all(c) (c).begin(), (c).end()
+#define zero(a) memset(a, 0, sizeof a)
+#define minus(a) memset(a, -1, sizeof a)
+template <class T1, class T2>
+inline bool minimize(T1 &a, T2 b) {
+  return b < a && (a = b, 1);
+}
+template <class T1, class T2>
+inline bool maximize(T1 &a, T2 b) {
+  return a < b && (a = b, 1);
+}
 
-  while (cin >> n >> m && (n | m)) {
-    H = n, W = m;
-    for (int i = 0; i < n; i++)
-      for (int j = 0; j < m; j++) cin >> str[i][j];
+typedef long long ll;
+int const inf = 1 << 29;
+
+int dx[4] = {-1, 0, 1, 0};
+int dy[4] = {0, -1, 0, 1};
+template <class T>
+constexpr bool in_range(T y, T x, T H, T W) {
+  return 0 <= y && y < H && 0 <= x && x < W;
+}
+
+void main_() {
+  for (int H, W; cin >> H >> W && (H || W);) {
+    vector<string> F(H);
+    rep(i, H) cin >> F[i];
+    vector<vector<bool>> vis(H, vector<bool>(W));
+    std::function<void(int, int, char)> dfs = [&](int y, int x, char ch) {
+      rep(i, 4) {
+        int ny = y + dy[i], nx = x + dx[i];
+        if (!in_range(ny, nx, H, W)) {
+          continue;
+        }
+        if (F[ny][nx] != ch) {
+          continue;
+        }
+        if (vis[ny][nx]) {
+          continue;
+        }
+        vis[ny][nx] = 1;
+        dfs(ny, nx, ch);
+      }
+    };
 
     int ans = 0;
-    char key;
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < m; j++) {
-        if (str[i][j] != '-') {
-          key = str[i][j];
-          dfs(j, i, key);
-          ans++;
-        }
+    rep(i, H) rep(j, W) {
+      if (!vis[i][j]) {
+        vis[i][j] = 1;
+        dfs(i, j, F[i][j]);
+        ans++;
       }
     }
-    /*
-    for(int i=0; i<n; i++) {
-      for(int j=0; j<m; j++) {
-        cout << str[i][j];
-      }
-      cout << endl;
-    }
-    */
     cout << ans << endl;
   }
-
-  return 0;
 }

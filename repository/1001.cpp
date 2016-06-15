@@ -1,40 +1,49 @@
-#include <iostream>
+#include <bits/stdc++.h>
+
 using namespace std;
 
-void divStr(const string& s, string& s1, string& s2) {
-  int n = s.size();
+// rep
+#define REP(i, a, b) for (int i = (a); i < (b); i++)
+#define rep(i, n) REP(i, 0, n)
+
+void division(string const &raw, string &left, string &right) {
+  int const N = raw.size();
   int retain = 0;
-  for (int pos = 1;; pos++) {
-    if (s[pos] == '(') retain++;
-    if (s[pos] == ')')
+  REP(pos, 1, N) {
+    if (raw[pos] == '(')
+      retain++;
+    else if (raw[pos] == ')')
       retain--;
     else if (retain == 0) {
-      s1 = s.substr(1, pos - 1);
-      s2 = s.substr(pos + 1, n - pos - 2);
-      return;
+      // assert(raw[pos] == ',');
+      left = raw.substr(1, pos - 1);
+      right = raw.substr(pos + 1, N - pos - 2);
+      break;
     }
   }
 }
 
-string make(string op, string s, string t) {
-  if (s == "" || t == "") {
-    if (op == "i")
-      return "";
+string solve(char op, string const &s, string const &t) {
+  if (s.empty() || t.empty()) {
+    if (op == 'i')
+      return min(s, t);
     else
-      return s == "" ? t : s;
+      return max(s, t);
   }
 
   string sL, sR, tL, tR;
-  divStr(s, sL, sR);
-  divStr(t, tL, tR);
+  division(s, sL, sR);
+  division(t, tL, tR);
 
-  return '(' + make(op, sL, tL) + ',' + make(op, sR, tR) + ')';
+  return '(' + solve(op, sL, tL) + ',' + solve(op, sR, tR) + ')';
 }
 
 int main() {
-  string op, sL, sR;
-
-  while (cin >> op >> sL >> sR) cout << make(op, sL, sR) << endl;
+  char op;
+  string s, t;
+  while (cin >> op >> s >> t) {
+    cout << solve(op, s, t) << endl;
+  }
 
   return 0;
 }

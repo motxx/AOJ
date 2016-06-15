@@ -1,28 +1,19 @@
 #include <iostream>
-#include <queue>
-#include <vector>
+#include <set>
 using namespace std;
-
+typedef pair<int, int> Pii;
 int main() {
-  int n, q, a, v;
-  priority_queue<pair<int, int> > pq;
-
-  cin >> n >> q;
-  vector<int> x(n + 1, 0);
-  for (int i = 0; i < q; i++) {
-    cin >> a >> v;
-    x[a] += v;
-    pq.push(make_pair(x[a], -a));
-    for (;;) {
-      int b = -pq.top().second;
-      int w = pq.top().first;
-      if (x[b] == w) {
-        cout << b << " " << w << endl;
-        break;
-      }
-      pq.pop();
-    }
+  int N, Q;
+  cin >> N >> Q;
+  static int memo[1000001];
+  set<Pii> st;
+  for (int q = 0; q < Q; q++) {
+    int a, v;
+    scanf("%d%d", &a, &v);
+    st.erase(Pii(-memo[a], a));
+    memo[a] += v;
+    st.insert(Pii(-memo[a], a));
+    printf("%d %d\n", st.begin()->second, -st.begin()->first);
   }
-
   return 0;
 }
