@@ -177,6 +177,7 @@ void make_tree(vector<vector<int>>& T) {
   }
 }
 
+// !!! system() があるため、そのままAOJに出すと Judge Not Available となるので注意 !!!
 namespace graph::visualizer {
 
 using graph_type = vector<vector<int>>;
